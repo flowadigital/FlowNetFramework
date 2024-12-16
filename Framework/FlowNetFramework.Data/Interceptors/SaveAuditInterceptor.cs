@@ -76,14 +76,14 @@ namespace FlowNetFramework.Data.Interceptors
                 {
                     if (entity.State == EntityState.Added)
                     {
-                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.Created), utcNow);
+                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.CreatedAt), utcNow);
                         SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.CreatedBy), userId);
                     }
 
                     if (entity.State == EntityState.Modified)
                     {
-                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.LastModified), utcNow);
-                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.LastModifiedBy), userId);
+                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.ModifiedAt), utcNow);
+                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.ModifiedBy), userId);
                     }
                 }
             }
@@ -100,8 +100,8 @@ namespace FlowNetFramework.Data.Interceptors
 
                     if (entity is IHasFullAudit)
                     {
-                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.LastModified), utcNow);
-                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.LastModifiedBy), userId);
+                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.ModifiedAt), utcNow);
+                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.ModifiedBy), userId);
                     }
                 }
             }
