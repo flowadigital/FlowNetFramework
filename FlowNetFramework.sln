@@ -9,11 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{653BA5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlowNetFramework.Core", "Framework\FlowNetFramework.Core\FlowNetFramework.Core.csproj", "{5821EFEA-4240-4257-AA94-FF299208A91E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowNetFramework.Data", "Framework\FlowNetFramework.Data\FlowNetFramework.Data.csproj", "{2A91A959-13B6-4B4A-94AD-5D4A86A5324E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlowNetFramework.Data", "Framework\FlowNetFramework.Data\FlowNetFramework.Data.csproj", "{2A91A959-13B6-4B4A-94AD-5D4A86A5324E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowNetFramework.Logging", "Framework\FlowNetFramework.Logging\FlowNetFramework.Logging.csproj", "{AF8A0B95-B8B3-4309-8C3B-3C268C95B062}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlowNetFramework.Logging", "Framework\FlowNetFramework.Logging\FlowNetFramework.Logging.csproj", "{AF8A0B95-B8B3-4309-8C3B-3C268C95B062}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.API", "Sample\Sample.API\Sample.API.csproj", "{3BE3B317-9D4E-4864-9A8B-6E3C81140943}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.API", "Sample\Sample.API\Sample.API.csproj", "{3BE3B317-9D4E-4864-9A8B-6E3C81140943}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowNetFramework.Commons", "Framework\FlowNetFramework.Commons\FlowNetFramework.Commons.csproj", "{C016D3E7-7A44-4464-A25B-B5BEEF498A75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{3BE3B317-9D4E-4864-9A8B-6E3C81140943}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BE3B317-9D4E-4864-9A8B-6E3C81140943}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BE3B317-9D4E-4864-9A8B-6E3C81140943}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C016D3E7-7A44-4464-A25B-B5BEEF498A75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C016D3E7-7A44-4464-A25B-B5BEEF498A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C016D3E7-7A44-4464-A25B-B5BEEF498A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C016D3E7-7A44-4464-A25B-B5BEEF498A75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{2A91A959-13B6-4B4A-94AD-5D4A86A5324E} = {85EFC693-954E-45CD-8D49-73568359BC4B}
 		{AF8A0B95-B8B3-4309-8C3B-3C268C95B062} = {85EFC693-954E-45CD-8D49-73568359BC4B}
 		{3BE3B317-9D4E-4864-9A8B-6E3C81140943} = {653BA558-27EA-4686-8FDF-1E05CBB1CF9D}
+		{C016D3E7-7A44-4464-A25B-B5BEEF498A75} = {85EFC693-954E-45CD-8D49-73568359BC4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90A63A70-C30C-402C-8E2E-34371E5964F6}

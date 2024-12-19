@@ -24,7 +24,6 @@ namespace FlowNetFramework.Data.Interceptors
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
@@ -55,7 +54,9 @@ namespace FlowNetFramework.Data.Interceptors
 
         private void UpdateAuditableEntities(DbContext context)
         {
-            DateTime utcNow = DateTime.UtcNow;
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+            DateTime utcNow = DateTime.UtcNow.ToUniversalTime();
 
             var entities = context.ChangeTracker.Entries<IHasFullAudit>().ToList();
             var softDeletedEntities = context.ChangeTracker.Entries<ISoftDeletable>().ToList();
@@ -63,15 +64,6 @@ namespace FlowNetFramework.Data.Interceptors
             var userId = string.Empty;
             if (entities != null && entities.Count > 0)
             {
-                if (_httpContextAccessor.HttpContext.User.Claims.Where(x => x.Type == "EmployeeId").FirstOrDefault() != null)
-                {
-                    userId = _httpContextAccessor.HttpContext.User.Claims.Where(x => x.Type == "EmployeeId").FirstOrDefault().Value;
-                }
-                else
-                {
-                    throw new ArgumentNullException(userId);
-                }
-
                 foreach (var entity in entities)
                 {
                     if (entity.State == EntityState.Added)
