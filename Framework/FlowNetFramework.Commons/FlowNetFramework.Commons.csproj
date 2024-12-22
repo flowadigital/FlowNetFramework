@@ -4,6 +4,28 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>1.0.1</Version>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Title>FlowNet.Commons</Title>
+    <Authors>Burak Coşkun</Authors>
+    <Company>$(Authors)</Company>
+    <Product>$(AssemblyName)</Product>
+    <Copyright>Copyright 2024</Copyright>
+    <Description>Framework for Clean Architecture Softwares</Description>
+    <PackageProjectUrl>www.burakcoskun.net</PackageProjectUrl>
+    <PackageIcon>flowneticon.jpg</PackageIcon>
+    <RepositoryUrl>https://github.com/flowadigital/FlowNetFramework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Interceptor feature is added.</PackageReleaseNotes>
+    <NeutralLanguage>tr</NeutralLanguage>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\..\OneDrive\Masaüstü\flowneticon.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

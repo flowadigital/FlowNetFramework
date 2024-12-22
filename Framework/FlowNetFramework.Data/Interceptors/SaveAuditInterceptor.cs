@@ -44,8 +44,6 @@ namespace FlowNetFramework.Data.Interceptors
 
         private void InterceptAudits(DbContextEventData eventData)
         {
-
-
             if (eventData.Context is not null)
             {
                 UpdateAuditableEntities(eventData.Context);
@@ -59,6 +57,7 @@ namespace FlowNetFramework.Data.Interceptors
             DateTime utcNow = DateTime.UtcNow.ToUniversalTime();
 
             var entities = context.ChangeTracker.Entries<IHasFullAudit>().ToList();
+
             var softDeletedEntities = context.ChangeTracker.Entries<ISoftDeletable>().ToList();
 
             var userId = string.Empty;
@@ -68,14 +67,14 @@ namespace FlowNetFramework.Data.Interceptors
                 {
                     if (entity.State == EntityState.Added)
                     {
-                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.CreatedAt), utcNow);
+                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.CreatedDate), utcNow);
                         SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.CreatedBy), userId);
                     }
 
                     if (entity.State == EntityState.Modified)
                     {
-                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.ModifiedAt), utcNow);
-                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.ModifiedBy), userId);
+                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.UpdatedDate), utcNow);
+                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.UpdatedBy), userId);
                     }
                 }
             }
@@ -84,16 +83,16 @@ namespace FlowNetFramework.Data.Interceptors
             {
                 if (entity.State == EntityState.Added)
                 {
-                    SetCurrentSoftDeletePropertyValue(entity, nameof(ISoftDeletable.Active), true);
+                    SetCurrentSoftDeletePropertyValue(entity, nameof(ISoftDeletable.IsActive), true);
                 }
                 if (entity.State == EntityState.Deleted)
                 {
-                    SetCurrentSoftDeletePropertyValue(entity, nameof(ISoftDeletable.Active), false);
+                    SetCurrentSoftDeletePropertyValue(entity, nameof(ISoftDeletable.IsActive), false);
 
                     if (entity is IHasFullAudit)
                     {
-                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.ModifiedAt), utcNow);
-                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.ModifiedBy), userId);
+                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.UpdatedDate), utcNow);
+                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.UpdatedBy), userId);
                     }
                 }
             }

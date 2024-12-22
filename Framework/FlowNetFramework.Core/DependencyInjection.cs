@@ -23,7 +23,7 @@ namespace FlowNetFramework.Core
             #region Assembly Works
             var assemblies = new List<Assembly>();
             assemblies.Add(Assembly.GetCallingAssembly());
-            var assemblyNames = Assembly.GetCallingAssembly().GetReferencedAssemblies().Where(x => x.Name.StartsWith("ArgeProject."));
+            var assemblyNames = Assembly.GetCallingAssembly().GetReferencedAssemblies().Where(x => x.Name.StartsWith("FlowaDigital."));
             var loadContext = new AssemblyLoadContext("FlowNetFrameworkAssemblyLoadContext");
             foreach (var assemblyName in assemblyNames)
             {

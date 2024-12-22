@@ -5,8 +5,27 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
+        <PackageId>$(AssemblyName)</PackageId>
+        <Title>FlowNet.Core</Title>
+        <Authors>Burak Coşkun</Authors>
+        <Product>$(AssemblyName)</Product>
+        <Description>Framework for Clean Architecture Softwares</Description>
+        <Copyright>Copyright 2024</Copyright>
+        <PackageProjectUrl>www.burakcoskun.net</PackageProjectUrl>
+        <PackageIcon>flowneticon.jpg</PackageIcon>
+        <RepositoryUrl>https://github.com/flowadigital/FlowNetFramework</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReleaseNotes>Interceptor feature is added.</PackageReleaseNotes>
+        <NeutralLanguage>tr</NeutralLanguage>
     </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\..\..\..\..\OneDrive\Masaüstü\flowneticon.jpg">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="13.0.1" />

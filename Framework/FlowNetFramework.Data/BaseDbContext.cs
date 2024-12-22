@@ -26,7 +26,7 @@ namespace FlowNetFramework.Data
             {
                 if (typeof(ISoftDeletable).IsAssignableFrom(entityType.ClrType))
                 {
-                    modelBuilder.Entity(entityType.ClrType).Property<bool>(nameof(ISoftDeletable.Active)).HasDefaultValue(true);
+                    modelBuilder.Entity(entityType.ClrType).Property<bool>(nameof(ISoftDeletable.IsActive)).HasDefaultValue(true);
                 }
             }
 

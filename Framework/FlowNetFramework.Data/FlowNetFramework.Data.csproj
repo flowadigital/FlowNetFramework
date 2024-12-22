@@ -5,8 +5,24 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
+        <PackageReleaseNotes>Interceptor feature is added.</PackageReleaseNotes>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/flowadigital/FlowNetFramework</RepositoryUrl>
+        <PackageIcon>flowneticon.jpg</PackageIcon>
+        <PackageProjectUrl>www.burakcoskun.net</PackageProjectUrl>
+        <Copyright>Copyright 2024</Copyright>
+        <Description>Framework for Clean Architecture Softwares</Description>
+        <Authors>Burak Coşkun</Authors>
+        <Title>FlowNet.Data</Title>
     </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\..\..\..\..\OneDrive\Masaüstü\flowneticon.jpg">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
