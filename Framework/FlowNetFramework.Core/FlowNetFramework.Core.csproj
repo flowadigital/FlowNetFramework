@@ -5,9 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
         <PackageId>$(AssemblyName)</PackageId>
-        <Title>FlowNet.Core</Title>
+        <Title>FlowNetFramework.Core</Title>
         <Authors>Burak Coşkun</Authors>
         <Product>$(AssemblyName)</Product>
         <Description>Framework for Clean Architecture Softwares</Description>
@@ -18,6 +18,8 @@
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>Interceptor feature is added.</PackageReleaseNotes>
         <NeutralLanguage>tr</NeutralLanguage>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     </PropertyGroup>
 
     <ItemGroup>
@@ -31,9 +33,7 @@
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
         <PackageReference Include="MediatR" Version="12.2.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
         <PackageReference Include="Scrutor" Version="4.2.2" />
     </ItemGroup>
 

@@ -5,11 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.0.1</Version>
-        <PackageReleaseNotes>Interceptor feature is added.</PackageReleaseNotes>
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/flowadigital/FlowNetFramework</RepositoryUrl>
-        <PackageIcon>flowneticon.jpg</PackageIcon>
+        <Version>1.0.2</Version>
+        <PackageId>$(AssemblyName)</PackageId>
+        <Title>FlowNetFramework.Core</Title>
+        <Authors>Burak Coşkun</Authors>
+        <Product>$(AssemblyName)</Product>
+        <Description>Framework for Clean Architecture Softwares</Description>
+        <Copyright>Copyright 2024</Copyright>
         <PackageProjectUrl>www.burakcoskun.net</PackageProjectUrl>
         <Copyright>Copyright 2024</Copyright>
         <Description>Framework for Clean Architecture Softwares</Description>
@@ -24,10 +26,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Serilog" Version="3.1.1" />
-        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
-        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
-        <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="6.5.0" />
+        <PackageReference Include="Serilog.Settings.AppSettings" Version="3.0.0" />
+        <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
     </ItemGroup>
 
 </Project>

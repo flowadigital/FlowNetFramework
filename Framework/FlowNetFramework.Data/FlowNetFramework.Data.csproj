@@ -5,11 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.0.1</Version>
-        <PackageReleaseNotes>Interceptor feature is added.</PackageReleaseNotes>
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/flowadigital/FlowNetFramework</RepositoryUrl>
-        <PackageIcon>flowneticon.jpg</PackageIcon>
+        <Version>1.0.2</Version>
+        <PackageId>$(AssemblyName)</PackageId>
+        <Title>FlowNetFramework.Data</Title>
+        <Authors>Burak Coşkun</Authors>
+        <Product>$(AssemblyName)</Product>
+        <Description>Framework for Clean Architecture Softwares</Description>
+        <Copyright>Copyright 2024</Copyright>
         <PackageProjectUrl>www.burakcoskun.net</PackageProjectUrl>
         <Copyright>Copyright 2024</Copyright>
         <Description>Framework for Clean Architecture Softwares</Description>
@@ -26,18 +28,19 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
         <PackageReference Include="Npgsql" Version="8.0.3" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FlowNetFramework.Commons\FlowNetFramework.Commons.csproj" />
     </ItemGroup>
 
 </Project>

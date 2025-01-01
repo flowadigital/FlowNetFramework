@@ -7,10 +7,18 @@ namespace FlowNetFramework.Logging
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddFrameworkLogging(this IServiceCollection services, IConfiguration configuration, ConfigureHostBuilder host)
+        public static IServiceCollection AddingFrameworkLogging(this IServiceCollection services, IConfiguration configuration, ConfigureHostBuilder host)
         {
+            var tableName = configuration["Logging:PostgreSQL:TableName"];
+
             Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(configuration).WriteTo.Console().Enrich.FromLogContext()
+            .ReadFrom.Configuration(configuration)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.PostgreSQL(
+                connectionString: configuration.GetConnectionString("DefaultConnection"),
+                tableName: "Logs",
+                needAutoCreateTable: true)
             .CreateLogger();
 
             host.UseSerilog();

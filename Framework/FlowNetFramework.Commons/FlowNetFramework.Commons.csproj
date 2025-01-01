@@ -4,9 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <PackageId>$(AssemblyName)</PackageId>
-    <Title>FlowNet.Commons</Title>
+    <Title>FlowNetFramework.Commons</Title>
     <Authors>Burak Coşkun</Authors>
     <Company>$(Authors)</Company>
     <Product>$(AssemblyName)</Product>
@@ -26,6 +26,10 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

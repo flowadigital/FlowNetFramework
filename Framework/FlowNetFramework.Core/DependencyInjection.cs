@@ -18,7 +18,7 @@ namespace FlowNetFramework.Core
 
             services.AddInfrastructureServices<T>(configuration, dbContextOptions);
 
-            //services.AddFrameworkLogging(configuration, host);
+            services.AddingFrameworkLogging(configuration, host);
 
             #region Assembly Works
             var assemblies = new List<Assembly>();
