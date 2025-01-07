@@ -1,13 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-using System.Runtime.Loader;
-using Microsoft.Extensions.Configuration;
-using Scrutor;
+﻿using FlowNetFramework.Persistence;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
-using FlowNetFramework.Persistence;
-using FlowNetFramework.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Scrutor;
+using System.Reflection;
+using System.Runtime.Loader;
 
 namespace FlowNetFramework.Core
 {
@@ -20,7 +19,7 @@ namespace FlowNetFramework.Core
             #endregion
 
             #region Logging
-            services.AddLoggingServices(configuration, host); 
+            //services.AddLoggingServices(configuration, host); 
             #endregion
 
             #region Assembly Works
@@ -35,11 +34,12 @@ namespace FlowNetFramework.Core
             #endregion
 
             #region Scrutor
-            services.Scan(selector => selector.FromAssemblies(assemblies.ToArray())
-                                  .AddClasses(true)
-                                  .UsingRegistrationStrategy(RegistrationStrategy.Skip)
-                                  .AsMatchingInterface()
-                                  .WithScopedLifetime());
+            services.Scan(delegate (ITypeSourceSelector selector)
+            {
+                selector.FromAssemblies(assemblies.ToArray()).AddClasses(publicOnly: true).UsingRegistrationStrategy(RegistrationStrategy.Skip)
+                    .AsMatchingInterface()
+                    .WithScopedLifetime();
+            });
             #endregion
 
             #region MediatR

@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Application\FlowNetFramework.Application\FlowNetFramework.Application.csproj" />
+      <ProjectReference Include="..\..\Commons\FlowNetFramework.Commons\FlowNetFramework.Commons.csproj" />
     </ItemGroup>
 
 </Project>

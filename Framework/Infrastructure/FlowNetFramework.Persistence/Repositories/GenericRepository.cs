@@ -1,13 +1,15 @@
 ﻿using FlowNetFramework.Application.Abstractions.Repositories;
+using FlowNetFramework.Commons.Models.Responses;
 using FlowNetFramework.Persistence.Data.Audits;
 using FlowNetFramework.Persistence.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
+using FlowNetFramework.Commons.Helpers;
 
 namespace FlowNetFramework.Persistence.Repositories
 {
-    public class GenericRepository<T, TContext> : IRepository<T>
+    public class GenericRepository<T, TContext> : IGenericRepository<T>
         where T : BaseEntity
         where TContext : BaseDbContext
     {
@@ -22,7 +24,7 @@ namespace FlowNetFramework.Persistence.Repositories
         }
 
         #region Read
-        public IQueryable<T> Get(CancellationToken cancellationToken)
+        public async Task<IQueryable<T>?> Get(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
@@ -31,7 +33,7 @@ namespace FlowNetFramework.Persistence.Repositories
             return query;
         }
 
-        public IQueryable<T> Get(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes)
+        public async Task<IQueryable<T>?> Get(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes)
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
@@ -66,55 +68,93 @@ namespace FlowNetFramework.Persistence.Repositories
             return await query.FirstOrDefaultAsync(x => x.Guid == guid);
         }
 
-        public async Task<T> GetSingleAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter)
+        public async Task<T?> GetSingleAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter)
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
             return await _dbset.FirstOrDefaultAsync(filter);
         }
 
-        public IQueryable<T> GetWithFilter(CancellationToken cancellationToken, Expression<Func<T, bool>> filter)
+        public async Task<IQueryable<T>?> GetWithFilter(CancellationToken cancellationToken, Expression<Func<T, bool>> filter)
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
             return _dbset.Where(filter);
         }
 
-        public IQueryable<T> GetwithFilterInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includes)
+        public async Task<IQueryable<T>?> GetwithFilterInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> filter, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null)
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
             IQueryable<T?> query = _dbset;
 
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
+            if (includeFuncs != null)
+                foreach (var includeFunc in includeFuncs)
+                {
+                    if (includeFunc != null)
+                    {
+                        query = includeFunc(query);
+                    }
+                }
 
             return query.Where(filter);
         }
 
-        //public async Task<PagedResponse<List<T>>> GetwithPagenationAsync(int? pageNumber = null, int? pageSize = null)
-        //{
-        //    IQueryable<T> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
+        public async Task<PagedResponse<List<T>>> GetwithPaginationAsync(CancellationToken cancellationToken, int? pageNumber = null, int? pageSize = null)
+        {
+            IQueryable<T> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
 
-        //    int totalRecords = await query.CountAsync();
+            int totalRecords = await query.CountAsync();
 
-        //    if (pageNumber.HasValue && pageSize.HasValue)
-        //    {
-        //        query = query.CustomPagination(pageNumber, pageSize);
-        //    }
+            if (pageNumber.HasValue && pageSize.HasValue)
+            {
+                query = query.CustomPagination(pageNumber, pageSize);
+            }
 
-        //    List<T> result = await query.ToListAsync();
+            List<T> result = await query.ToListAsync();
 
-        //    return new PagedResponse<List<T>>(result, pageNumber ?? 1, pageSize ?? 10, totalRecords)
-        //    {
-        //        PageNumber = pageNumber ?? 1,
-        //        PageSize = pageSize ?? 10,
-        //        TotalRecords = totalRecords,
-        //        Data = result
-        //    };
-        //}
+            return new PagedResponse<List<T>>(result, pageNumber ?? 1, pageSize ?? 10, totalRecords)
+            {
+                PageNumber = pageNumber ?? 1,
+                PageSize = pageSize ?? 10,
+                TotalRecords = totalRecords,
+                Data = result
+            };
+        }
+
+        public async Task<PagedResponse<List<T>>> GetAllwithFilterAndPaginationAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter = null, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null, int? pageNumber = null, int? pageSize = null)
+        {
+            if (filter == null)
+                filter = x => true;
+
+            IQueryable<T> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).Where(filter);
+
+            int totalRecords = await query.CountAsync();
+
+            if (includeFuncs != null)
+                foreach (var includeFunc in includeFuncs)
+                {
+                    if (includeFunc != null)
+                    {
+                        query = includeFunc(query);
+                    }
+                }
+
+            if (pageNumber.HasValue && pageSize.HasValue)
+            {
+                query = query.CustomPagination(pageNumber, pageSize);
+            }
+
+            List<T> result = await query.ToListAsync();
+
+            return new PagedResponse<List<T>>(result, pageNumber ?? 1, pageSize ?? 10, totalRecords)
+            {
+                PageNumber = pageNumber ?? 1,
+                PageSize = pageSize ?? 10,
+                TotalRecords = totalRecords,
+                Data = result
+            };
+        }
         #endregion
 
         #region Write
@@ -170,7 +210,14 @@ namespace FlowNetFramework.Persistence.Repositories
             EntityEntry<T> entityEntry = _dbset.Update(entity);
 
             return entityEntry.State == EntityState.Modified;
-        }      
+        }
+
+        public bool SoftDelete(CancellationToken cancellationToken, T entity)
+        {
+            entity.IsActive = false;
+
+            return Update(cancellationToken, entity);
+        }
         #endregion
     }
 }

@@ -1,19 +1,20 @@
-﻿using System.Linq.Expressions;
+﻿using FlowNetFramework.Commons.Models.Responses;
+using System.Linq.Expressions;
 
 namespace FlowNetFramework.Application.Abstractions.Repositories;
-public interface IRepository<T>
+public interface IGenericRepository<T>
     where T : class
 {
     #region Yeni
 
     #region Read
-    IQueryable<T> Get(CancellationToken cancellationToken);
+    Task<IQueryable<T>?> Get(CancellationToken cancellationToken);
 
-    public IQueryable<T> Get(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes);
+    public Task<IQueryable<T>?> Get(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes);
 
-    public IQueryable<T> GetWithFilter(CancellationToken cancellationToken, Expression<Func<T, bool>> filter);
+    public Task<IQueryable<T>?> GetWithFilter(CancellationToken cancellationToken, Expression<Func<T, bool>> filter);
 
-    public IQueryable<T> GetwithFilterInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includes);
+    public Task<IQueryable<T>?> GetwithFilterInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> filter, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null);
 
     public Task<T> GetSingleAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter);
 
@@ -21,7 +22,9 @@ public interface IRepository<T>
 
     public Task<T?> GetByGuidIdAsync(CancellationToken cancellationToken, Guid id, params Expression<Func<T, object>>[] includes);
 
-    //public Task<PagedResponse<List<T>>> GetwithPagenationAsync(int? pageNumber = null, int? pageSize = null);
+    public Task<PagedResponse<List<T>>> GetwithPaginationAsync(CancellationToken cancellationToken, int? pageNumber = null, int? pageSize = null);
+
+    public Task<PagedResponse<List<T>>> GetAllwithFilterAndPaginationAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter = null, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null, int? pageNumber = null, int? pageSize = null);
 
     #endregion
 
@@ -33,6 +36,8 @@ public interface IRepository<T>
     public bool Update(CancellationToken cancellationToken, T entity);
 
     public bool Delete(CancellationToken cancellationToken, T entity);
+
+    public bool SoftDelete(CancellationToken cancellationToken, T entity);
 
     public Task<bool> DeleteAsync(CancellationToken cancellationToken, Guid id);
 

@@ -7,7 +7,7 @@ namespace FlowNetFramework.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddLoggingServices(this IServiceCollection services, IConfiguration configuration, ConfigureHostBuilder host)
+        public static IServiceCollection AddLoggingServices(this IServiceCollection services, IConfiguration configuration, WebApplicationBuilder builder)
         {
             var tableName = configuration["Logging:PostgreSQL:TableName"];
 
@@ -21,7 +21,7 @@ namespace FlowNetFramework.Infrastructure
                 needAutoCreateTable: true)
             .CreateLogger();
 
-            host.UseSerilog();
+            builder.Host.UseSerilog();
 
             return services;
         }
