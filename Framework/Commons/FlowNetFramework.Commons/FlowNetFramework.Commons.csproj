@@ -1,9 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+      <TargetFramework>net8.0</TargetFramework>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+      <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+      <Version>1.0.3</Version>
+      <PackageId>$(AssemblyName)</PackageId>
+      <Title>FlowNetFramework.Commons</Title>
+      <Authors>Burak Coşkun</Authors>
+      <Product>$(AssemblyName)</Product>
+      <Description>Framework for Clean Architecture Softwares</Description>
+      <Copyright>Copyright 2024</Copyright>
+      <PackageProjectUrl>www.burakcoskun.net</PackageProjectUrl>
   </PropertyGroup>
 
     <ItemGroup>

@@ -5,17 +5,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <PackageId>$(AssemblyName)</PackageId>
-        <Title>FlowNetFramework.Core</Title>
+        <Title>FlowNetFramework.Infrastructure</Title>
         <Authors>Burak Coşkun</Authors>
         <Product>$(AssemblyName)</Product>
         <Description>Framework for Clean Architecture Softwares</Description>
         <Copyright>Copyright 2024</Copyright>
         <PackageProjectUrl>www.burakcoskun.net</PackageProjectUrl>
-        <Copyright>Copyright 2024</Copyright>
-        <Description>Framework for Clean Architecture Softwares</Description>
-        <Title>FlowNet.Logging</Title>
     </PropertyGroup>
 
     <ItemGroup>
