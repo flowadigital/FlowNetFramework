@@ -1,17 +1,18 @@
 ﻿using FlowNetFramework.Application.Abstractions.Repositories;
+using FlowNetFramework.Commons.Helpers;
 using FlowNetFramework.Commons.Models.Responses;
 using FlowNetFramework.Persistence.Data.Audits;
-using FlowNetFramework.Persistence.Data.EF;
+using FlowNetFramework.Persistence.Data.Identity;
+using FlowNetFramework.Persistence.Data.Identity.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
-using FlowNetFramework.Commons.Helpers;
 
 namespace FlowNetFramework.Persistence.Repositories
 {
     public class GenericRepositorywithIdentity<T, TContext> : IGenericRepository<T>
         where T : BaseEntity
-        where TContext : BaseDbContextwithIdentity
+        where TContext : BaseDbContextwithIdentity<AppUser, AppRole, int>
     {
         private readonly TContext _dbContext;
 

@@ -1,12 +1,16 @@
 ﻿using FlowNetFramework.Persistence.Data.Audits;
 using FlowNetFramework.Persistence.Data.Interceptors;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlowNetFramework.Persistence.Data.EF
+namespace FlowNetFramework.Persistence.Data.Identity
 {
-    public abstract class BaseDbContextwithIdentity : IdentityDbContext
+    public abstract class BaseDbContextwithIdentity<TUser, TRole, TKey> : IdentityDbContext<TUser, TRole, TKey>
+        where TUser : IdentityUser<TKey>
+        where TRole : IdentityRole<TKey>
+        where TKey : struct, IEquatable<TKey>
     {
         private readonly IHttpContextAccessor httpContextAccessor;
 

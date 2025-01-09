@@ -1,6 +1,8 @@
 ﻿using FlowNetFramework.Persistence;
+using FlowNetFramework.Persistence.Data.Identity.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +43,8 @@ namespace FlowNetFramework.Core
                     .WithScopedLifetime();
             });
             #endregion
+
+            services.AddScoped<SignInManager<AppUser>>();
 
             #region MediatR
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies.ToArray()));
