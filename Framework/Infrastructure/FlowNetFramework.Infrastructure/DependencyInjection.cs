@@ -9,17 +9,7 @@ namespace FlowNetFramework.Infrastructure
     {
         public static IServiceCollection AddLoggingServices(this IServiceCollection services, IConfiguration configuration, WebApplicationBuilder builder)
         {
-            var tableName = configuration["Logging:PostgreSQL:TableName"];
-
-            Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(configuration)
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .WriteTo.PostgreSQL(
-                connectionString: configuration.GetConnectionString("DefaultConnection"),
-                tableName: "Logs",
-                needAutoCreateTable: true)
-            .CreateLogger();
+            Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).WriteTo.Console().CreateLogger();
 
             builder.Host.UseSerilog();
 
