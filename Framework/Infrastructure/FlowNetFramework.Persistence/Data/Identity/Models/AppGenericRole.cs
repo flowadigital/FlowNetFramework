@@ -2,7 +2,7 @@
 
 namespace FlowNetFramework.Persistence.Data.Identity.Models
 {
-    public class AppRole : IdentityRole<int>
+    public class AppGenericRole : IdentityRole<string>
     {
     }
 }

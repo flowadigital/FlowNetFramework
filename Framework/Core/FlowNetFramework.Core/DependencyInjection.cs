@@ -44,8 +44,6 @@ namespace FlowNetFramework.Core
             });
             #endregion
 
-            services.AddTransient<SignInManager<AppUser>>();
-
             #region MediatR
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies.ToArray()));
             #endregion

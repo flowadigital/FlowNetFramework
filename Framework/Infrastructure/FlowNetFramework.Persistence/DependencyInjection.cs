@@ -11,8 +11,8 @@ namespace FlowNetFramework.Persistence
         {
             services.AddDbContext<T>(options);
 
-            services.AddIdentityCore<AppUser>()
-                    .AddRoles<AppRole>()
+            services.AddIdentityCore<AppGenericUser>()
+                    .AddRoles<AppGenericRole>()
                     .AddEntityFrameworkStores<T>();
 
             return services;

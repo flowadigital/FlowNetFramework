@@ -3,16 +3,18 @@ using FlowNetFramework.Commons.Helpers;
 using FlowNetFramework.Commons.Models.Responses;
 using FlowNetFramework.Persistence.Data.Audits;
 using FlowNetFramework.Persistence.Data.Identity;
-using FlowNetFramework.Persistence.Data.Identity.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 
 namespace FlowNetFramework.Persistence.Repositories
 {
-    public class GenericRepositorywithIdentity<T, TContext> : IGenericRepository<T>
+    public class GenericRepositorywithIdentity<T, TContext, TUser, TRole> : IGenericRepository<T>
+        where TUser : IdentityUser, new()
+        where TRole : IdentityRole<string>, new()
         where T : BaseEntity
-        where TContext : BaseDbContextwithIdentity<AppUser, AppRole, int>
+        where TContext : BaseDbContextwithIdentity<TUser, TRole>
     {
         private readonly TContext _dbContext;
 
@@ -29,7 +31,7 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            IQueryable<T?> query = _dbset;
+            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
 
             return query;
         }
@@ -38,7 +40,7 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            IQueryable<T?> query = _dbset;
+            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
 
             foreach (var include in includes)
             {
@@ -52,14 +54,14 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            return await _dbset.FirstOrDefaultAsync(x => x.Guid == guid);
+            return await _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.Guid == guid);
         }
 
         public async Task<T?> GetByGuidIdAsync(CancellationToken cancellationToken, Guid guid, params Expression<Func<T, object>>[] includes)
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            IQueryable<T?> query = _dbset;
+            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
 
             foreach (var include in includes)
             {
@@ -80,14 +82,14 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            return _dbset.Where(filter);
+            return _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).Where(filter);
         }
 
         public async Task<IQueryable<T>?> GetwithFilterInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> filter, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null)
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            IQueryable<T?> query = _dbset;
+            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
 
             if (includeFuncs != null)
                 foreach (var includeFunc in includeFuncs)

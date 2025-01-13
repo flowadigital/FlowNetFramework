@@ -28,7 +28,7 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            IQueryable<T?> query = _dbset;
+            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
 
             return query;
         }
@@ -37,7 +37,7 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            IQueryable<T?> query = _dbset;
+            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
 
             foreach (var include in includes)
             {
@@ -51,14 +51,14 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            return await _dbset.FirstOrDefaultAsync(x => x.Guid == guid);
+            return await _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.Guid == guid);
         }
 
         public async Task<T?> GetByGuidIdAsync(CancellationToken cancellationToken, Guid guid, params Expression<Func<T, object>>[] includes)
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            IQueryable<T?> query = _dbset;
+            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
 
             foreach (var include in includes)
             {
@@ -79,14 +79,14 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            return _dbset.Where(filter);
+            return _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).Where(filter);
         }
 
         public async Task<IQueryable<T>?> GetwithFilterInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> filter, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null)
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            IQueryable<T?> query = _dbset;
+            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
 
             if (includeFuncs != null)
                 foreach (var includeFunc in includeFuncs)

@@ -3,14 +3,10 @@
 namespace FlowNetFramework.Persistence.Data.Identity.Models
 
 {
-    public class AppUser : IdentityUser<int>
+    public class AppGenericUser : IdentityUser
     {
-        public Guid Guid { get; set; } = new Guid();
-
         public string Name { get; set; }
 
         public string Surname { get; set; }
-
-        public string ImageUrl { get; set; }
     }
 }
