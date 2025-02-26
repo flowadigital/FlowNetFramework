@@ -14,10 +14,10 @@ namespace FlowNetFramework.Core
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddFlowNetFramework<T>(this IServiceCollection services, IConfiguration configuration, ConfigureHostBuilder host, Action<DbContextOptionsBuilder> dbContextOptions) where T : DbContext
+        public static IServiceCollection AddFlowNetFramework<T>(this IServiceCollection services, IConfiguration configuration, ConfigureHostBuilder host, Action<DbContextOptionsBuilder> dbContextOptions, string solutionName) where T : DbContext
         {
             #region Database
-            services.AddPersistenceServices<T>(configuration, dbContextOptions); 
+            services.AddPersistenceServices<T>(configuration, dbContextOptions);
             #endregion
 
             #region Logging
@@ -27,7 +27,7 @@ namespace FlowNetFramework.Core
             #region Assembly Works
             var assemblies = new List<Assembly>();
             assemblies.Add(Assembly.GetCallingAssembly());
-            var assemblyNames = Assembly.GetCallingAssembly().GetReferencedAssemblies().Where(x => x.Name.StartsWith("FlowaDigital."));
+            var assemblyNames = Assembly.GetCallingAssembly().GetReferencedAssemblies().Where(x => x.Name.StartsWith($"{solutionName}."));
             var loadContext = new AssemblyLoadContext("FlowNetFrameworkAssemblyLoadContext");
             foreach (var assemblyName in assemblyNames)
             {
@@ -78,7 +78,7 @@ namespace FlowNetFramework.Core
                                           .WithExposedHeaders("Authorization", "Set-Cookie", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers");
                                       });
                 });
-            } 
+            }
             #endregion
 
             services.AddHttpContextAccessor();
