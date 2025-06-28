@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowNetFramework.Persistence.Data.Identity
 {
-    public abstract class BaseDbContextwithIdentity<TUser, TRole, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : IdentityDbContext<TUser, TRole, string,
+    public abstract class BaseDbContextwithIdentity<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : IdentityDbContext<TUser, TRole, string,
     IdentityUserClaim<string>, IdentityUserRole<string>, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
         where TUser : IdentityUser, new()
         where TRole : IdentityRole<string>, new()

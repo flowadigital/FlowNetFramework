@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-      <TargetFramework>net8.0</TargetFramework>
+      <TargetFramework>net9.0</TargetFramework>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-      <Version>1.0.14</Version>
+      <Version>1.0.15</Version>
       <PackageId>$(AssemblyName)</PackageId>
       <Title>FlowNetFramework.Core</Title>
       <Authors>Burak Coşkun</Authors>
@@ -20,8 +20,11 @@
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
         <PackageReference Include="MediatR" Version="12.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
         <PackageReference Include="Scrutor" Version="4.2.2" />
+        <PackageReference Include="System.Text.Json" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>

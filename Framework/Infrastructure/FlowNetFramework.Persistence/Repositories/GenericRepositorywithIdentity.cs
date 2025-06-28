@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 
 namespace FlowNetFramework.Persistence.Repositories
 {
-    public class GenericRepositorywithIdentity<T, TContext, TUser, TRole, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : IGenericRepository<T>
+    public class GenericRepositorywithIdentity<T, TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : IGenericRepository<T>
         where TUser : IdentityUser, new()
         where TRole : IdentityRole<string>, new()
         where TUserClaim : IdentityUserClaim<string>, new()
@@ -19,7 +19,7 @@ namespace FlowNetFramework.Persistence.Repositories
         where TRoleClaim : IdentityRoleClaim<string>, new()
         where TUserToken : IdentityUserToken<string>, new()
         where T : BaseEntity
-        where TContext : BaseDbContextwithIdentity<TUser, TRole, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        where TContext : BaseDbContextwithIdentity<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
     {
         private readonly TContext _dbContext;
 
