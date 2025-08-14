@@ -1,26 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.0.15</Version>
-        <PackageId>$(AssemblyName)</PackageId>
-        <Title>FlowNetFramework.Infrastructure</Title>
-        <Authors>Burak Coşkun</Authors>
-        <Product>$(AssemblyName)</Product>
-        <Description>Framework for Clean Architecture Softwares</Description>
-        <Copyright>Copyright 2024</Copyright>
-        <PackageProjectUrl>www.burakcoskun.net</PackageProjectUrl>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <None Include="..\..\..\..\..\..\OneDrive\Masaüstü\flowneticon.jpg">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+      <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+      <Version>1.0.21</Version>
+  </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />

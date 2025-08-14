@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{575C8DB8-C7D7-4AA4-9102-19052B48AEA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowNetFramework.Infrastructure", "Framework\Infrastructure\FlowNetFramework.Infrastructure\FlowNetFramework.Infrastructure.csproj", "{8BAF45C7-A35A-4289-9FFA-647F636781E7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowNetFramework.Persistence", "Framework\Infrastructure\FlowNetFramework.Persistence\FlowNetFramework.Persistence.csproj", "{04896D8F-939D-4170-B951-B1C890008165}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{ABF1419B-9BCC-48C6-ABB7-DBDB419BCE55}"
@@ -23,16 +21,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commons", "Commons", "{34FC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowNetFramework.Commons", "Framework\Commons\FlowNetFramework.Commons\FlowNetFramework.Commons.csproj", "{F3A06C4F-F5E7-40BD-896E-03A4F8125061}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowNetFramework.Infrastructure", "Framework\Infrastructure\FlowNetFramework.Infrastructure\FlowNetFramework.Infrastructure.csproj", "{2D5A0F21-AE68-4427-B2DB-9696255ECB95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8BAF45C7-A35A-4289-9FFA-647F636781E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BAF45C7-A35A-4289-9FFA-647F636781E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BAF45C7-A35A-4289-9FFA-647F636781E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BAF45C7-A35A-4289-9FFA-647F636781E7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{04896D8F-939D-4170-B951-B1C890008165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{04896D8F-939D-4170-B951-B1C890008165}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04896D8F-939D-4170-B951-B1C890008165}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,13 +45,16 @@ Global
 		{F3A06C4F-F5E7-40BD-896E-03A4F8125061}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3A06C4F-F5E7-40BD-896E-03A4F8125061}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3A06C4F-F5E7-40BD-896E-03A4F8125061}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D5A0F21-AE68-4427-B2DB-9696255ECB95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D5A0F21-AE68-4427-B2DB-9696255ECB95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D5A0F21-AE68-4427-B2DB-9696255ECB95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D5A0F21-AE68-4427-B2DB-9696255ECB95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{575C8DB8-C7D7-4AA4-9102-19052B48AEA5} = {85EFC693-954E-45CD-8D49-73568359BC4B}
-		{8BAF45C7-A35A-4289-9FFA-647F636781E7} = {575C8DB8-C7D7-4AA4-9102-19052B48AEA5}
 		{04896D8F-939D-4170-B951-B1C890008165} = {575C8DB8-C7D7-4AA4-9102-19052B48AEA5}
 		{ABF1419B-9BCC-48C6-ABB7-DBDB419BCE55} = {85EFC693-954E-45CD-8D49-73568359BC4B}
 		{2EDA3BCC-5286-499D-AAB7-ED6C3583DFE8} = {ABF1419B-9BCC-48C6-ABB7-DBDB419BCE55}
@@ -63,6 +62,7 @@ Global
 		{32D70F29-BD8B-4203-918B-E2996E838234} = {5C34D72E-C8D2-4855-9E30-0AC781DAE806}
 		{34FC31F8-4A31-4045-90A8-B2289357972B} = {85EFC693-954E-45CD-8D49-73568359BC4B}
 		{F3A06C4F-F5E7-40BD-896E-03A4F8125061} = {34FC31F8-4A31-4045-90A8-B2289357972B}
+		{2D5A0F21-AE68-4427-B2DB-9696255ECB95} = {575C8DB8-C7D7-4AA4-9102-19052B48AEA5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90A63A70-C30C-402C-8E2E-34371E5964F6}

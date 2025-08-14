@@ -1,14 +1,8 @@
 ﻿namespace FlowNetFramework.Persistence.Data.Audits
 {
-    public class BaseEntity : IHasFullAudit, IHasLongId, ISoftDeletable
+    public class BaseEntity : IHasFullAudit, IHasGuidId, ISoftDeletable
     {
-        public BaseEntity()
-        {
-            Guid = Guid.NewGuid();
-        }
-
-        public long Id { get; set; }
-        public Guid Guid { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public bool IsActive { get; set; }
     }
 }

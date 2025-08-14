@@ -51,7 +51,7 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return null;
 
-            return await _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.Guid == guid);
+            return await _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.Id == guid);
         }
 
         public async Task<T?> GetByGuidIdAsync(CancellationToken cancellationToken, Guid guid, params Expression<Func<T, object>>[] includes)
@@ -65,7 +65,7 @@ namespace FlowNetFramework.Persistence.Repositories
                 query = query.Include(include);
             }
 
-            return await query.FirstOrDefaultAsync(x => x.Guid == guid);
+            return await query.FirstOrDefaultAsync(x => x.Id == guid);
         }
 
         public async Task<T?> GetSingleAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter)
@@ -189,7 +189,7 @@ namespace FlowNetFramework.Persistence.Repositories
         {
             if (cancellationToken.IsCancellationRequested) return false;
 
-            T entity = await _dbset.FirstOrDefaultAsync(x => x.Guid == guid);
+            T entity = await _dbset.FirstOrDefaultAsync(x => x.Id == guid);
 
             return Delete(cancellationToken, entity);
         }

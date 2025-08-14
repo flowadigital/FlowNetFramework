@@ -2,9 +2,9 @@
 
 namespace FlowNetFramework.Persistence.Data.Audits
 {
-    public interface IHasLongId
+    public interface IHasGuidId
     {
         [Key]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
     }
 }
