@@ -1,4 +1,6 @@
-﻿namespace FlowNetFramework.Persistence.Data.Audits
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FlowNetFramework.Persistence.Data.Audits
 {
     public class BaseEntity : IHasFullAudit, IHasGuidId, ISoftDeletable
     {

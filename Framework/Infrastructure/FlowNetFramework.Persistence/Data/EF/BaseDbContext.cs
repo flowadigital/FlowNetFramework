@@ -7,16 +7,15 @@ namespace FlowNetFramework.Persistence.Data.EF
 {
     public abstract class BaseDbContext : DbContext
     {
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IRequestCookieCollection _cookies;
 
-        public BaseDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options)
+        public BaseDbContext(DbContextOptions options, IRequestCookieCollection cookies) : base(options)
         {
-            this.httpContextAccessor = httpContextAccessor;
+            _cookies= cookies;
         }
-        //
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.AddInterceptors(new SaveAuditInterceptor(httpContextAccessor));
+            optionsBuilder.AddInterceptors(new SaveAuditInterceptor(_cookies));
             base.OnConfiguring(optionsBuilder);
         }
 

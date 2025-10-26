@@ -6,40 +6,25 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace FlowNetFramework.Persistence.Data.Interceptors
 {
-    internal class SaveAuditInterceptor : SaveChangesInterceptor
+    public class SaveAuditInterceptor : SaveChangesInterceptor
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IRequestCookieCollection _cookies;
 
-        public SaveAuditInterceptor(IHttpContextAccessor httpContextAccessor)
+        public SaveAuditInterceptor(IRequestCookieCollection cookies)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _cookies = cookies;
         }
 
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
-            try
-            {
                 InterceptAudits(eventData);
                 return base.SavingChanges(eventData, result);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
 
         public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                InterceptAudits(eventData);
-                return base.SavingChangesAsync(eventData, result, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            InterceptAudits(eventData);
+            return base.SavingChangesAsync(eventData, result, cancellationToken);
         }
 
         private void InterceptAudits(DbContextEventData eventData)
@@ -62,15 +47,15 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
 
             #region Cookie'den userId alinmasi
 
-            var userId = "17C42ADD-2E94-488A-8270-2A7D961D2DCC";
+            string userId = string.Empty;
 
-            //var localeCookie = _httpContextAccessor?.HttpContext?.Request.Cookies;
+            var localeCookie = _cookies;
 
-            //if (_httpContextAccessor?.HttpContext?.Request?.Cookies != null &&
-            //    _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("Flowa.Current.UserId", out var userIdStr))
-            //{
-            //    userId = userIdStr;
-            //}
+            if (_cookies != null &&
+                _cookies.TryGetValue("Flowa.Current.UserId", out var userIdStr))
+            {
+                userId = userIdStr;
+            }
 
             #endregion
 

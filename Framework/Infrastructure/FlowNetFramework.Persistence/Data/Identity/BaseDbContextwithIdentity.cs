@@ -17,17 +17,8 @@ namespace FlowNetFramework.Persistence.Data.Identity
         where TRoleClaim : IdentityRoleClaim<string>, new()
         where TUserToken : IdentityUserToken<string>, new()
     {
-        private readonly IHttpContextAccessor httpContextAccessor;
-
-        public BaseDbContextwithIdentity(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options)
+        public BaseDbContextwithIdentity(DbContextOptions options) : base(options)
         {
-            this.httpContextAccessor = httpContextAccessor;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.AddInterceptors(new SaveAuditInterceptor(httpContextAccessor));
-            base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
