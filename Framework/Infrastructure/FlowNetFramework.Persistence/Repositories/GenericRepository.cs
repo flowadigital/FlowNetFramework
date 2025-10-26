@@ -218,6 +218,21 @@ namespace FlowNetFramework.Persistence.Repositories
 
             return Update(cancellationToken, entity);
         }
+
+        public bool SoftDeleteRange(CancellationToken cancellationToken, List<T> entities)
+        {
+            if (cancellationToken.IsCancellationRequested || entities == null || !entities.Any())
+                return false;
+
+            foreach (var entity in entities)
+            {
+                entity.IsActive = false;
+            }
+
+            _dbset.UpdateRange(entities);
+
+            return true;
+        }
         #endregion
     }
 }

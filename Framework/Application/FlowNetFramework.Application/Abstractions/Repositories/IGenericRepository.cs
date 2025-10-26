@@ -39,6 +39,8 @@ public interface IGenericRepository<T>
 
     public bool SoftDelete(CancellationToken cancellationToken, T entity);
 
+    public bool SoftDeleteRange(CancellationToken cancellationToken, List<T> entities);
+
     public Task<bool> DeleteAsync(CancellationToken cancellationToken, Guid id);
 
     public bool DeleteRange(CancellationToken cancellationToken, List<T> entities);

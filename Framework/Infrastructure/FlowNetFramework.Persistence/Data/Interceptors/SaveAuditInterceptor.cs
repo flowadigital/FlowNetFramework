@@ -60,7 +60,20 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
 
             var softDeletedEntities = context.ChangeTracker.Entries<ISoftDeletable>().ToList();
 
-            var userId = string.Empty;
+            #region Cookie'den userId alinmasi
+
+            var userId = "17C42ADD-2E94-488A-8270-2A7D961D2DCC";
+
+            //var localeCookie = _httpContextAccessor?.HttpContext?.Request.Cookies;
+
+            //if (_httpContextAccessor?.HttpContext?.Request?.Cookies != null &&
+            //    _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("Flowa.Current.UserId", out var userIdStr))
+            //{
+            //    userId = userIdStr;
+            //}
+
+            #endregion
+
             if (entities != null && entities.Count > 0)
             {
                 foreach (var entity in entities)

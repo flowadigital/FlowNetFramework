@@ -1,8 +1,6 @@
 ﻿using FlowNetFramework.Persistence;
-using FlowNetFramework.Persistence.Data.Identity.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +12,13 @@ namespace FlowNetFramework.Core
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddFlowNetFramework<T>(this IServiceCollection services, IConfiguration configuration, ConfigureHostBuilder host, Action<DbContextOptionsBuilder> dbContextOptions, string solutionName) where T : DbContext
+        public static IServiceCollection AddFlowNetFramework<T>(
+            this IServiceCollection services, 
+            IConfiguration configuration, 
+            ConfigureHostBuilder host, 
+            Action<DbContextOptionsBuilder> dbContextOptions, 
+            string solutionName) 
+            where T : DbContext
         {
             #region Database
             services.AddPersistenceServices<T>(configuration, dbContextOptions);
@@ -44,9 +48,9 @@ namespace FlowNetFramework.Core
             });
             #endregion
 
-            #region MediatR
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies.ToArray()));
-            #endregion
+            //#region MediatR
+            //services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies.ToArray()));
+            //#endregion
 
             #region AutoMapper
             services.AddAutoMapper(assemblies);
