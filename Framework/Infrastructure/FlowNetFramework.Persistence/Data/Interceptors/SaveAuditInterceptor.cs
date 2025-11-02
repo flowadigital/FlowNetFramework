@@ -47,7 +47,7 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
 
             #region Cookie'den userId alinmasi
 
-            string userId = string.Empty;
+            string userId = string.Empty, tenantId = string.Empty;
 
             var localeCookie = _cookies;
 
@@ -55,6 +55,12 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
                 _cookies.TryGetValue("Flowa.Current.UserId", out var userIdStr))
             {
                 userId = userIdStr;
+            }
+
+            if (_cookies != null &&
+                _cookies.TryGetValue("Flowa.Current.TenantId", out var tenantIdStr))
+            {
+                tenantId = tenantIdStr;
             }
 
             #endregion
@@ -74,6 +80,8 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
                         SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.UpdatedDate), utcNow);
                         SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.UpdatedBy), userId);
                     }
+
+                    SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.TenantId), tenantId);
                 }
             }
 
