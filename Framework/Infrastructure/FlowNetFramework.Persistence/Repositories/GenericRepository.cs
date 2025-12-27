@@ -26,134 +26,243 @@ namespace FlowNetFramework.Persistence.Repositories
         #region Read
         public async Task<IQueryable<T>?> Get(CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) return null;
+            if (cancellationToken.IsCancellationRequested)
+                return null;
 
-            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
-
-            return query;
+            // 🔹 FILTER
+            return _dbset
+                .AsNoTracking()
+                .Where(x => x.IsActive);
         }
 
-        public async Task<IQueryable<T>?> Get(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes)
+        public async Task<IQueryable<T>?> Get(
+             CancellationToken cancellationToken,
+             params Expression<Func<T, object>>[] includes
+         )
         {
-            if (cancellationToken.IsCancellationRequested) return null;
+            if (cancellationToken.IsCancellationRequested)
+                return null;
 
-            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
+            // 🔹 FILTER
+            IQueryable<T> query = _dbset
+                .AsNoTracking()
+                .Where(x => x.IsActive);
 
-            foreach (var include in includes)
+            // 🔹 INCLUDE
+            if (includes != null && includes.Length > 0)
             {
-                query = query.Include(include);
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
             }
 
             return query;
         }
 
-        public async Task<T?> GetByGuidIdAsync(CancellationToken cancellationToken, Guid guid)
+        public async Task<T?> GetByGuidIdAsync(
+            CancellationToken cancellationToken,
+            Guid guid
+        )
         {
-            if (cancellationToken.IsCancellationRequested) return null;
+            if (cancellationToken.IsCancellationRequested)
+                return null;
 
-            return await _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.Id == guid);
+            // 🔹 FILTER
+            return await _dbset
+                .AsNoTracking()
+                .Where(x => x.IsActive)
+                .FirstOrDefaultAsync(x => x.Id == guid, cancellationToken);
         }
 
-        public async Task<T?> GetByGuidIdAsync(CancellationToken cancellationToken, Guid guid, params Expression<Func<T, object>>[] includes)
+        public async Task<T?> GetByGuidIdAsync(
+            CancellationToken cancellationToken,
+            Guid guid,
+            params Expression<Func<T, object>>[] includes
+        )
         {
-            if (cancellationToken.IsCancellationRequested) return null;
+            if (cancellationToken.IsCancellationRequested)
+                return null;
 
-            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
+            // 🔹 FILTER
+            IQueryable<T> query = _dbset
+                .AsNoTracking()
+                .Where(x => x.IsActive);
 
-            foreach (var include in includes)
+            // 🔹 INCLUDE
+            if (includes != null && includes.Length > 0)
             {
-                query = query.Include(include);
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
             }
 
-            return await query.FirstOrDefaultAsync(x => x.Id == guid);
+            return await query.FirstOrDefaultAsync(x => x.Id == guid, cancellationToken);
         }
 
-        public async Task<T?> GetSingleAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter)
+        public async Task<T?> GetSingleAsync(
+            CancellationToken cancellationToken,
+            Expression<Func<T, bool>> filter,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+        )
         {
-            if (cancellationToken.IsCancellationRequested) return null;
+            if (cancellationToken.IsCancellationRequested)
+                return null;
 
-            return await _dbset.FirstOrDefaultAsync(filter);
+            // 🔹 FILTER
+            IQueryable<T> query = _dbset
+                .AsNoTracking()
+                .Where(x => x.IsActive)
+                .Where(filter);
+
+            // 🔹 ORDER BY (opsiyonel)
+            query = orderBy != null
+                ? orderBy(query)
+                : query.OrderByDescending(x => x.UpdatedDate ?? x.CreatedDate);
+
+            return await query.FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<IQueryable<T>?> GetWithFilter(CancellationToken cancellationToken, Expression<Func<T, bool>> filter)
+        public async Task<IQueryable<T>?> GetWithFilter(
+            CancellationToken cancellationToken,
+            Expression<Func<T, bool>> filter,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+        )
         {
-            if (cancellationToken.IsCancellationRequested) return null;
+            if (cancellationToken.IsCancellationRequested)
+                return null;
 
-            return _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).Where(filter);
+            // 🔹 FILTER
+            IQueryable<T> query = _dbset
+                .AsNoTracking()
+                .Where(x => x.IsActive)
+                .Where(filter);
+
+            // 🔹 DEFAULT ORDER
+            query = orderBy != null
+                ? orderBy(query)
+                : query.OrderByDescending(x => x.UpdatedDate ?? x.CreatedDate);
+
+            return query;
         }
 
-        public async Task<IQueryable<T>?> GetwithFilterInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> filter, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null)
+        public async Task<IQueryable<T>?> GetwithFilterInclude(
+            CancellationToken cancellationToken,
+            Expression<Func<T, bool>> filter,
+            List<Func<IQueryable<T>, IQueryable<T>>>? includeFuncs = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+        )
         {
-            if (cancellationToken.IsCancellationRequested) return null;
+            if (cancellationToken.IsCancellationRequested)
+                return null;
 
-            IQueryable<T?> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
+            // 🔹 FILTER
+            IQueryable<T> query = _dbset
+                .AsNoTracking()
+                .Where(x => x.IsActive)
+                .Where(filter);
 
+            // 🔹 INCLUDE
             if (includeFuncs != null)
+            {
                 foreach (var includeFunc in includeFuncs)
                 {
                     if (includeFunc != null)
-                    {
                         query = includeFunc(query);
-                    }
                 }
+            }
 
-            return query.Where(filter);
+            // 🔹 ORDER BY (opsiyonel)
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            return query;
         }
 
-        public async Task<PagedResponse<List<T>>> GetwithPaginationAsync(CancellationToken cancellationToken, int? pageNumber = null, int? pageSize = null)
+        public async Task<PagedResponse<List<T>>> GetwithPaginationAsync(
+            CancellationToken cancellationToken,
+            int? pageNumber = null,
+            int? pageSize = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null)
         {
-            IQueryable<T> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id);
+            // 🔹 FILTER
+            IQueryable<T> query = _dbset
+                .AsNoTracking()
+                .Where(x => x.IsActive);
 
-            int totalRecords = await query.CountAsync();
+            // 🔹 ORDER BY (opsiyonel)
+            query = orderBy != null
+                ? orderBy(query)
+                : query.OrderByDescending(x => x.UpdatedDate ?? x.CreatedDate);
 
+            int totalRecords = await query.CountAsync(cancellationToken);
+
+            // 🔹 PAGINATION
             if (pageNumber.HasValue && pageSize.HasValue)
             {
                 query = query.CustomPagination(pageNumber, pageSize);
             }
 
-            List<T> result = await query.ToListAsync();
+            List<T> result = await query.ToListAsync(cancellationToken);
 
-            return new PagedResponse<List<T>>(result, pageNumber ?? 1, pageSize ?? 10, totalRecords)
-            {
-                PageNumber = pageNumber ?? 1,
-                PageSize = pageSize ?? 10,
-                TotalRecords = totalRecords,
-                Data = result
-            };
+            return new PagedResponse<List<T>>(
+                result,
+                pageNumber ?? 1,
+                pageSize ?? 10,
+                totalRecords
+            );
         }
 
-        public async Task<PagedResponse<List<T>>> GetAllwithFilterAndPaginationAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter = null, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null, int? pageNumber = null, int? pageSize = null)
+        public async Task<PagedResponse<List<T>>> GetAllwithFilterAndPaginationAsync(
+            CancellationToken cancellationToken,
+            Expression<Func<T, bool>>? filter = null,
+            List<Func<IQueryable<T>, IQueryable<T>>>? includeFuncs = null,
+            int? pageNumber = null,
+            int? pageSize = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null)
         {
-            if (filter == null)
-                filter = x => true;
+            filter ??= x => true;
 
-            IQueryable<T> query = _dbset.AsNoTracking().Where(x => x.IsActive).OrderByDescending(x => x.Id).Where(filter);
+            // 🔹 FILTER
+            IQueryable<T> query = _dbset
+                .AsNoTracking()
+                .Where(x => x.IsActive)
+                .Where(filter);
 
-            int totalRecords = await query.CountAsync();
-
+            // 🔹 INCLUDE
             if (includeFuncs != null)
+            {
                 foreach (var includeFunc in includeFuncs)
                 {
                     if (includeFunc != null)
-                    {
                         query = includeFunc(query);
-                    }
                 }
+            }
 
+            // 🔹 ORDER
+            query = orderBy != null
+                ? orderBy(query)
+                : query.OrderByDescending(x => x.UpdatedDate ?? x.CreatedDate);
+
+            int totalRecords = await query.CountAsync(cancellationToken);
+
+            // 🔹 PAGINATION
             if (pageNumber.HasValue && pageSize.HasValue)
             {
                 query = query.CustomPagination(pageNumber, pageSize);
             }
 
-            List<T> result = await query.ToListAsync();
+            List<T> result = await query.ToListAsync(cancellationToken);
 
-            return new PagedResponse<List<T>>(result, pageNumber ?? 1, pageSize ?? 10, totalRecords)
-            {
-                PageNumber = pageNumber ?? 1,
-                PageSize = pageSize ?? 10,
-                TotalRecords = totalRecords,
-                Data = result
-            };
+            return new PagedResponse<List<T>>(
+                result,
+                pageNumber ?? 1,
+                pageSize ?? 10,
+                totalRecords
+            );
         }
         #endregion
 

@@ -5,26 +5,61 @@ namespace FlowNetFramework.Application.Abstractions.Repositories;
 public interface IGenericRepository<T>
     where T : class
 {
-    #region Yeni
-
     #region Read
-    Task<IQueryable<T>?> Get(CancellationToken cancellationToken);
+    Task<IQueryable<T>?> Get(
+        CancellationToken cancellationToken
+    );
 
-    public Task<IQueryable<T>?> Get(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes);
+    Task<IQueryable<T>?> Get(
+        CancellationToken cancellationToken,
+        params Expression<Func<T, object>>[] includes
+    );
 
-    public Task<IQueryable<T>?> GetWithFilter(CancellationToken cancellationToken, Expression<Func<T, bool>> filter);
+    Task<T?> GetByGuidIdAsync(
+        CancellationToken cancellationToken,
+        Guid guid
+    );
 
-    public Task<IQueryable<T>?> GetwithFilterInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> filter, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null);
+    Task<T?> GetByGuidIdAsync(
+        CancellationToken cancellationToken,
+        Guid guid,
+        params Expression<Func<T, object>>[] includes
+    );
 
-    public Task<T> GetSingleAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter);
+    Task<T?> GetSingleAsync(
+        CancellationToken cancellationToken,
+        Expression<Func<T, bool>> filter,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+    );
 
-    public Task<T?> GetByGuidIdAsync(CancellationToken cancellationToken, Guid id);
+    Task<IQueryable<T>?> GetWithFilter(
+        CancellationToken cancellationToken,
+        Expression<Func<T, bool>> filter,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+    );
 
-    public Task<T?> GetByGuidIdAsync(CancellationToken cancellationToken, Guid id, params Expression<Func<T, object>>[] includes);
+    Task<IQueryable<T>?> GetwithFilterInclude(
+        CancellationToken cancellationToken,
+        Expression<Func<T, bool>> filter,
+        List<Func<IQueryable<T>, IQueryable<T>>>? includeFuncs = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+    );
 
-    public Task<PagedResponse<List<T>>> GetwithPaginationAsync(CancellationToken cancellationToken, int? pageNumber = null, int? pageSize = null);
+    Task<PagedResponse<List<T>>> GetwithPaginationAsync(
+        CancellationToken cancellationToken,
+        int? pageNumber = null,
+        int? pageSize = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+    );
 
-    public Task<PagedResponse<List<T>>> GetAllwithFilterAndPaginationAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> filter = null, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null, int? pageNumber = null, int? pageSize = null);
+    Task<PagedResponse<List<T>>> GetAllwithFilterAndPaginationAsync(
+        CancellationToken cancellationToken,
+        Expression<Func<T, bool>>? filter = null,
+        List<Func<IQueryable<T>, IQueryable<T>>>? includeFuncs = null,
+        int? pageNumber = null,
+        int? pageSize = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+    );
 
     #endregion
 
@@ -45,29 +80,5 @@ public interface IGenericRepository<T>
 
     public bool DeleteRange(CancellationToken cancellationToken, List<T> entities);
 
-    #endregion
-
-    #endregion
-
-    #region Eski
-    //Task<PagedResponse<List<T>>> GetAllAsync(int? pageNumber = null, int? pageSize = null);
-    //Task<List<T>> GetAllwithNopaginationAsync();
-    //Task<PagedResponse<List<T>>> GetAllwithFilterAndPaginationAsync(Expression<Func<T, bool>> filter = null, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null, int? pageNumber = null, int? pageSize = null);
-    //Task<List<T>> GetAllwithFilterAsync(Expression<Func<T, bool>> filter = null, List<Func<IQueryable<T>, IQueryable<T>>> includeFuncs = null);
-    //Task<PagedResponse<List<T>>> GetListByIdAsync(long id, int? pageNumber = null, int? pageSize = null);
-    //Task<PagedResponse<List<T>>> GetListByGuidAsync(Guid guid, int? pageNumber = null, int? pageSize = null);
-    //IQueryable<T> GetAllQuery();
-    //Task<T> GetByGuidAsync(Guid guid);
-    //Task<T> GetByGuidAsyncInclude(Guid guid, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
-    //Task<T?> GetByIdAsync(long id);
-    //Task AddAsync(T entity);
-    //Task AddRangeAsync(IEnumerable<T> entity);
-    //void SoftDelete(T entity);
-    //void Delete(T entity);
-    //void DeleteRange(List<T> entities);
-    //void Update(T entity);
-    //void UpdateRange(List<T> entity);
-    //Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
-    //Task<bool> Contains(T entity); 
     #endregion
 }
