@@ -8,17 +8,17 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
 {
     public class SaveAuditInterceptor : SaveChangesInterceptor
     {
-        private readonly IRequestCookieCollection _cookies;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SaveAuditInterceptor(IRequestCookieCollection cookies)
+        public SaveAuditInterceptor(IHttpContextAccessor httpContextAccessor)
         {
-            _cookies = cookies;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
-                InterceptAudits(eventData);
-                return base.SavingChanges(eventData, result);
+            InterceptAudits(eventData);
+            return base.SavingChanges(eventData, result);
         }
 
         public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
@@ -49,16 +49,16 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
 
             string userId = string.Empty, tenantId = string.Empty;
 
-            var localeCookie = _cookies;
+            var localeCookie = _httpContextAccessor?.HttpContext?.Request.Cookies;
 
-            if (_cookies != null &&
-                _cookies.TryGetValue("Flowa.Current.UserId", out var userIdStr))
+            if (localeCookie != null &&
+                localeCookie.TryGetValue("Flowa.Current.UserId", out var userIdStr))
             {
                 userId = userIdStr;
             }
 
-            if (_cookies != null &&
-                _cookies.TryGetValue("Flowa.Current.TenantId", out var tenantIdStr))
+            if (localeCookie != null &&
+                localeCookie.TryGetValue("Flowa.Current.TenantId", out var tenantIdStr))
             {
                 tenantId = tenantIdStr;
             }
@@ -81,7 +81,7 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
                         SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.UpdatedBy), userId);
                     }
 
-                    SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.TenantId), tenantId);
+                    SetCurrentTenantPropertyValue(entity, nameof(IHasFullAudit.TenantId), tenantId);
                 }
             }
 
@@ -114,9 +114,26 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
             entry.Property(propertyName).CurrentValue = value;
         }
 
-        static void SetCurrentUserPropertyValue(EntityEntry entry, string propertyName, string userId)
+        static void SetCurrentUserPropertyValue(
+           EntityEntry entry,
+           string propertyName,
+           string userId)
         {
-            entry.Property(propertyName).CurrentValue = userId;
+            var property = entry.Property(propertyName);
+            var propertyType = property.Metadata.ClrType;
+
+            property.CurrentValue = userId;
+        }
+
+        static void SetCurrentTenantPropertyValue(
+           EntityEntry entry,
+           string propertyName,
+           string tenantId)
+        {
+            var property = entry.Property(propertyName);
+            var propertyType = property.Metadata.ClrType;
+
+            property.CurrentValue = Guid.Parse(tenantId);
         }
     }
 }
