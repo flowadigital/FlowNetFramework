@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FlowNetFramework.Persistence.Data.Interceptors
 {
@@ -10,106 +12,191 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SaveAuditInterceptor(IHttpContextAccessor httpContextAccessor)
+        public SaveAuditInterceptor(
+            IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
+        public override InterceptionResult<int> SavingChanges(
+            DbContextEventData eventData,
+            InterceptionResult<int> result)
         {
-            InterceptAudits(eventData);
+            InterceptAudits(eventData, result, default);
             return base.SavingChanges(eventData, result);
         }
 
-        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
         {
-            InterceptAudits(eventData);
+            InterceptAudits(eventData, result, cancellationToken);
             return base.SavingChangesAsync(eventData, result, cancellationToken);
         }
 
-        private void InterceptAudits(DbContextEventData eventData)
+        private void InterceptAudits(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken)
         {
             if (eventData.Context is not null)
             {
-                UpdateAuditableEntities(eventData.Context);
+                UpdateAuditableEntities(eventData.Context, result, cancellationToken);
             }
         }
 
-        private void UpdateAuditableEntities(DbContext context)
+        private void UpdateAuditableEntities(
+            DbContext context, 
+            InterceptionResult<int> result, 
+            CancellationToken cancellationToken)
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            if (cancellationToken.IsCancellationRequested)
+                return;
 
-            DateTime utcNow = DateTime.UtcNow.ToUniversalTime();
+            DateTime utcNow = DateTime.UtcNow;
 
             var entities = context.ChangeTracker.Entries<IHasFullAudit>().ToList();
 
-            var softDeletedEntities = context.ChangeTracker.Entries<ISoftDeletable>().ToList();
-
             #region Cookie'den userId alinmasi
 
-            string userId = string.Empty, tenantId = string.Empty;
-
-            var localeCookie = _httpContextAccessor?.HttpContext?.Request.Cookies;
-
-            if (localeCookie != null &&
-                localeCookie.TryGetValue("Flowa.Current.UserId", out var userIdStr))
-            {
-                userId = userIdStr;
-            }
-
-            if (localeCookie != null &&
-                localeCookie.TryGetValue("Flowa.Current.TenantId", out var tenantIdStr))
-            {
-                tenantId = tenantIdStr;
-            }
+            // 1) UserId cookie
+            var userId = _httpContextAccessor?.HttpContext?.Request.Cookies.TryGetValue("Flowa.Current.UserId", out var uid) == true
+                ? uid
+                : "system";
 
             #endregion
 
-            if (entities != null && entities.Count > 0)
+            // 2) Track edilen FullAudit entity'ler
+            var entries = context.ChangeTracker.Entries<IHasFullAudit>()
+                .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
+                .ToList();
+
+            if (entries.Count == 0)
+                return;
+
+            var auditLogs = new List<AuditLog>();
+
+            foreach (var entry in entries)
             {
-                foreach (var entity in entities)
+                if (entry.State == EntityState.Added)
                 {
-                    if (entity.State == EntityState.Added)
-                    {
-                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.CreatedDate), utcNow);
-                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.CreatedBy), userId);
-                    }
+                    SetCurrentDatePropertyValue(entry, nameof(IHasFullAudit.CreatedDate), utcNow);
+                    SetCurrentUserPropertyValue(entry, nameof(IHasFullAudit.CreatedBy), userId);
 
-                    if (entity.State == EntityState.Modified)
-                    {
-                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.UpdatedDate), utcNow);
-                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.UpdatedBy), userId);
-                    }
+                    TrySetProperty(entry, "IsActive", true);
+                    continue;
+                }
 
-                    SetCurrentTenantPropertyValue(entity, nameof(IHasFullAudit.TenantId), tenantId);
+                if (entry.State == EntityState.Modified)
+                {
+                    // 🔴 OLD value
+                    var oldSnapshot = entry.OriginalValues.Properties.ToDictionary(
+                        p => p.Name,
+                        p => entry.OriginalValues[p]);
+
+                    // 🟢 NEW value
+                    var newSnapshot = entry.CurrentValues.Properties.ToDictionary(
+                        p => p.Name,
+                        p => entry.CurrentValues[p]);
+
+                    var oldJson = JsonSerializer.Serialize(oldSnapshot, new JsonSerializerOptions
+                    {
+                        WriteIndented = false,
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles
+                    });
+
+                    var newJson = JsonSerializer.Serialize(newSnapshot, new JsonSerializerOptions
+                    {
+                        WriteIndented = false,
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles
+                    });
+
+                    // Audit alanları
+                    SetCurrentDatePropertyValue(entry, nameof(IHasFullAudit.UpdatedDate), utcNow);
+                    SetCurrentUserPropertyValue(entry, nameof(IHasFullAudit.UpdatedBy), userId);
+
+                    // PK
+                    var pkValues = entry.Properties
+                        .Where(p => p.Metadata.IsPrimaryKey())
+                        .Select(p => p.OriginalValue?.ToString() ?? p.CurrentValue?.ToString())
+                        .Where(v => !string.IsNullOrWhiteSpace(v))
+                        .ToArray();
+
+                    auditLogs.Add(new AuditLog
+                    {
+                        EntityName = entry.Metadata.ClrType.Name,
+                        EntityId = pkValues.Length > 0 ? string.Join(",", pkValues) : "",
+                        Action = "Update",
+                        OldValueJson = oldJson,
+                        NewValueJson = newJson,
+                        UserId = userId,
+                        CreatedBy = userId,
+                        CreatedDate = utcNow,
+                        IsActive = true,
+                    });
+
+                    continue;
+                }
+
+                if (entry.State == EntityState.Deleted)
+                {
+                    // OLD snapshot: OriginalValues'tan al (soft delete uygulamadan önce)
+                    var oldSnapshot = entry.OriginalValues.Properties.ToDictionary(
+                        p => p.Name,
+                        p => entry.OriginalValues[p]);
+
+                    var oldJson = JsonSerializer.Serialize(oldSnapshot, new JsonSerializerOptions
+                    {
+                        WriteIndented = false,
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles
+                    });
+
+                    // Soft delete
+                    SetCurrentSoftDeletePropertyValue(entry, "IsActive", value: false);
+
+                    // Silmeyi update'e çevir
+                    entry.State = EntityState.Modified;
+
+                    // Audit alanları (soft delete = update)
+                    SetCurrentDatePropertyValue(entry, nameof(IHasFullAudit.UpdatedDate), utcNow);
+                    SetCurrentUserPropertyValue(entry, nameof(IHasFullAudit.UpdatedBy), userId);
+
+                    var pkValues = entry.Properties
+                        .Where(p => p.Metadata.IsPrimaryKey())
+                        .Select(p => p.OriginalValue?.ToString() ?? p.CurrentValue?.ToString())
+                        .Where(v => !string.IsNullOrWhiteSpace(v))
+                        .ToArray();
+
+                    auditLogs.Add(new AuditLog
+                    {
+                        EntityName = entry.Metadata.ClrType.Name,
+                        EntityId = pkValues.Length > 0 ? string.Join(",", pkValues) : "",
+                        Action = "Delete",
+                        OldValueJson = oldJson,
+                        UserId = userId,
+                        CreatedBy = userId,
+                        CreatedDate = utcNow,
+                        IsActive = true,
+                    });
                 }
             }
 
-            foreach (var entity in softDeletedEntities)
+            if (auditLogs.Count > 0)
             {
-                if (entity.State == EntityState.Added)
-                {
-                    SetCurrentSoftDeletePropertyValue(entity, nameof(ISoftDeletable.IsActive), true);
-                }
-                if (entity.State == EntityState.Deleted)
-                {
-                    SetCurrentSoftDeletePropertyValue(entity, nameof(ISoftDeletable.IsActive), false);
-
-                    if (entity is IHasFullAudit)
-                    {
-                        SetCurrentDatePropertyValue(entity, nameof(IHasFullAudit.UpdatedDate), utcNow);
-                        SetCurrentUserPropertyValue(entity, nameof(IHasFullAudit.UpdatedBy), userId);
-                    }
-                }
+                context.Set<AuditLog>().AddRange(auditLogs);
             }
         }
 
-        static void SetCurrentDatePropertyValue(EntityEntry entry, string propertyName, DateTime utcNow)
+        static void SetCurrentDatePropertyValue(
+            EntityEntry entry, 
+            string propertyName, 
+            DateTime utcNow)
         {
             entry.Property(propertyName).CurrentValue = utcNow;
         }
 
-        static void SetCurrentSoftDeletePropertyValue(EntityEntry entry, string propertyName, bool value)
+        static void SetCurrentSoftDeletePropertyValue(
+            EntityEntry entry, 
+            string propertyName, 
+            bool value)
         {
             entry.Property(propertyName).CurrentValue = value;
         }
@@ -125,15 +212,11 @@ namespace FlowNetFramework.Persistence.Data.Interceptors
             property.CurrentValue = userId;
         }
 
-        static void SetCurrentTenantPropertyValue(
-           EntityEntry entry,
-           string propertyName,
-           string tenantId)
+        static void TrySetProperty(EntityEntry entry, string propertyName, object value)
         {
-            var property = entry.Property(propertyName);
-            var propertyType = property.Metadata.ClrType;
-
-            property.CurrentValue = Guid.Parse(tenantId);
+            var prop = entry.Metadata.FindProperty(propertyName);
+            if (prop is null) return;
+            entry.Property(propertyName).CurrentValue = value;
         }
     }
 }
