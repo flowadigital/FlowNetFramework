@@ -68,8 +68,8 @@ namespace FlowNetFramework.Core
             if (isCORSEnabled)
             {
                 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-                string[] allowedOrigins = configuration["Cors:AllowedOrigins"]?.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                Console.WriteLine($"[INFO] FlowNet Framework || CORS Allowed Origins: -> {(string.Join(",", allowedOrigins))}");
+                string[]? allowedOrigins = configuration["Cors:AllowedOrigins"]?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
                 services.AddCors(options =>
                 {
                     options.AddPolicy(name: MyAllowSpecificOrigins,
