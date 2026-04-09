@@ -42,7 +42,8 @@ public interface IGenericRepository<T>
         CancellationToken cancellationToken,
         Expression<Func<T, bool>> filter,
         List<Func<IQueryable<T>, IQueryable<T>>>? includeFuncs = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool asNoTracking = true
     );
 
     Task<PagedResponse<List<T>>> GetwithPaginationAsync(

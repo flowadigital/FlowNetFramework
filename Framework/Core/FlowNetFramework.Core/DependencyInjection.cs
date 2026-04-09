@@ -29,14 +29,27 @@ namespace FlowNetFramework.Core
             #endregion
 
             #region Assembly Works
+            //var assemblies = new List<Assembly>();
+            //assemblies.Add(Assembly.GetCallingAssembly());
+            //var assemblyNames = Assembly.GetCallingAssembly().GetReferencedAssemblies().Where(x => x.Name.StartsWith($"{solutionName}."));
+            //var loadContext = new AssemblyLoadContext("FlowNetFrameworkAssemblyLoadContext");
+            //foreach (var assemblyName in assemblyNames)
+            //{
+            //    assemblies.Add(loadContext.LoadFromAssemblyName(assemblyName));
+            //}
+
             var assemblies = new List<Assembly>();
             assemblies.Add(Assembly.GetCallingAssembly());
-            var assemblyNames = Assembly.GetCallingAssembly().GetReferencedAssemblies().Where(x => x.Name.StartsWith($"{solutionName}."));
-            var loadContext = new AssemblyLoadContext("FlowNetFrameworkAssemblyLoadContext");
+
+            var assemblyNames = Assembly.GetCallingAssembly()
+                .GetReferencedAssemblies()
+                .Where(x => x.Name != null && x.Name.StartsWith($"{solutionName}."));
+
             foreach (var assemblyName in assemblyNames)
             {
-                assemblies.Add(loadContext.LoadFromAssemblyName(assemblyName));
+                assemblies.Add(Assembly.Load(assemblyName));
             }
+
             #endregion
 
             #region Scrutor
@@ -53,7 +66,9 @@ namespace FlowNetFramework.Core
             //#endregion
 
             #region AutoMapper
-            services.AddAutoMapper(assemblies);
+            services.AddAutoMapper(cfg =>
+            {
+            }, assemblies.ToArray());
             #endregion
 
             #region FluentValidation
@@ -63,13 +78,10 @@ namespace FlowNetFramework.Core
             #region CORS
             var isCORSEnabled = Convert.ToBoolean(configuration["Cors:Enabled"]);
 
-            Console.WriteLine($"[INFO] FlowNet Framework || CORS Status: -> {(isCORSEnabled ? "Enabled" : "Disabled")}");
-
             if (isCORSEnabled)
             {
                 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
                 string[]? allowedOrigins = configuration["Cors:AllowedOrigins"]?.Split(',', StringSplitOptions.RemoveEmptyEntries);
-
                 services.AddCors(options =>
                 {
                     options.AddPolicy(name: MyAllowSpecificOrigins,

@@ -159,7 +159,8 @@ namespace FlowNetFramework.Persistence.Repositories
             CancellationToken cancellationToken,
             Expression<Func<T, bool>> filter,
             List<Func<IQueryable<T>, IQueryable<T>>>? includeFuncs = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            bool asNoTracking = true
         )
         {
             if (cancellationToken.IsCancellationRequested)
@@ -167,9 +168,12 @@ namespace FlowNetFramework.Persistence.Repositories
 
             // 🔹 FILTER
             IQueryable<T> query = _dbset
-                .AsNoTracking()
                 .Where(x => x.IsActive)
                 .Where(filter);
+
+            // ✅ Okuma ise NoTracking, Update ise Tracking
+            if (asNoTracking)
+                query = query.AsNoTracking();
 
             // 🔹 INCLUDE
             if (includeFuncs != null)
@@ -181,11 +185,9 @@ namespace FlowNetFramework.Persistence.Repositories
                 }
             }
 
-            // 🔹 ORDER BY (opsiyonel)
+            // 🔹 ORDER BY
             if (orderBy != null)
-            {
                 query = orderBy(query);
-            }
 
             return query;
         }
